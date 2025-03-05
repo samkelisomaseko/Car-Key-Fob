@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Car Key Fob - Secure Access</title>
+
+    <style>
+        /* iOS-Inspired Design */
+        :root {
+            --ios-blue: #007AFF;
+            --ios-gray: #8E8E93;
+            --ios-background: #F2F2F7;
+            --ios-text: #000000;
+            --ios-secondary-text: #666666;
+            --ios-success: #28a745;
+            --ios-warning: #ffc107;
+            --ios-red: #FF3B30; /* iOS Red Color */
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+            margin: 0;
+            background-color: var(--ios-background);
+            color: var(--ios-text);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .landing-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .auth-box {
+            background-color: #FFFFFF;
+            border-radius: 28px; /* More Rounded Corners */
+            padding: 30px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: clamp(300px, 80vw, 400px);
+            max-width: 90%;
+            z-index: 1;
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .auth-box.shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% {
+                transform: translateX(-1px);
+            }
+            20%, 80% {
+                transform: translateX(2px);
+            }
+            30%, 50%, 70% {
+                transform: translateX(-4px);
+            }
+            40%, 60% {
+                transform: translateX(4px);
+            }
+        }
+
+        .ios-title {
+            font-size: 32px; /* Larger Title */
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--ios-text);
+            letter-spacing: -0.02em; /* Subtle letter spacing */
+        }
+
+        .app-description {
+            font-size: 17px; /* Slightly larger description */
+            color: var(--ios-secondary-text);
+            margin-bottom: 24px; /* More space */
+            line-height: 1.4;
+        }
+
+        .auth-option {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--ios-background);
+            border-radius: 18px; /* More Rounded */
+            padding: 16px; /* Larger padding */
+            margin-bottom: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform: scale(1);
+        }
+
+        .auth-option:hover {
+            background-color: #E0E0E5;
+        }
+
+        .auth-option:active {
+            transform: scale(0.96); /* Slightly less scale */
+        }
+
+        .auth-option.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .auth-icon {
+            width: 26px; /* Larger Icons */
+            height: 26px;
+            margin-right: 16px; /* More space for icon */
+        }
+
+        .auth-text {
+            font-size: 18px; /* Slightly larger text */
+            font-weight: 500;
+            color: var(--ios-text);
+        }
+
+        .ios-input {
+            width: 100%;
+            padding: 16px; /* Larger input padding */
+            margin-bottom: 12px;
+            border: 1px solid var(--ios-gray);
+            border-radius: 12px;
+            font-size: 17px;
+            color: var(--ios-text);
+            background-color: var(--ios-background);
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .ios-input:focus {
+            outline: none;
+            border-color: var(--ios-blue);
+        }
+
+        .ios-button {
+            background-color: var(--ios-blue);
+            color: white;
+            padding: 16px 32px; /* Larger button */
+            border: none;
+            border-radius: 18px; /* More rounded button */
+            font-size: 19px; /* Larger font */
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform: scale(1);
+        }
+
+        .ios-button:hover {
+            background-color: #0062CC;
+        }
+
+        .ios-button:active {
+            transform: scale(0.96);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .feedback-message {
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 15px;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform: translateY(-10px);
+        }
+
+        .feedback-message.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feedback-message.error {
+            color: var(--ios-red); /* Use iOS Red for errors */
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+
+        .feedback-message.success {
+            color: #155724;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: -50px;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"%3E%3Cpath d="M0,56.5c0,0,298.666,0,399.333,0C448.336,56.5,513.994,46,601.349,46c87.356,0,171.929,10.5,266.359,10.5c82.325,0,164.65,0,233.943,0v18H0V56.5z" fill="currentColor"/%3E%3C/svg%3E') repeat-x;
+            background-size: cover;
+            animation: wave 10s linear infinite;
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        @keyframes wave {
+            0% {
+                background-position-x: 0;
+            }
+            100% {
+                background-position-x: 1000px;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #000000; /* Dark Mode Background */
+                color: #FFFFFF;
+            }
+            .auth-box {
+                background-color: #1c1c1e; /* Darker background */
+                box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
+            }
+            .ios-input {
+                background-color: #2c2c2e;
+                border-color: #3a3a3c;
+                color: #FFFFFF;
+            }
+            .auth-option {
+                background-color: #2c2c2e;
+            }
+            .auth-option:hover {
+                background-color: #3a3a3c;
+            }
+        }
+    </style>
+
+    <style>
+        .auth-option.touch {
+            background-color: #D0D0D0;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .auth-option.touch {
+                background-color: #4A4A4A;
+            }
+        }
+    </style>
+
+</head>
+<body>
+    <div class="landing-container">
+        <div class="auth-box">
+            <h1 class="ios-title">Secure Access</h1>
+            <p class="app-description">Control your vehicle's features with ease and security.</p>
+
+            <div class="auth-option" id="passwordAuth">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M0 0h512v512H0z' fill='none'/%3E%3Cpath fill='currentColor' d='M384 128h-32c-17.67 0-32 14.33-32 32v64h-64v-64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v192c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-64h64v64c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V160c0-17.67-14.33-32-32-32zm64 64H480V352H384V192z'/%3E%3C/svg%3E" alt="Password Icon" class="auth-icon">
+                <span class="auth-text">Use Password</span>
+            </div>
+
+            <div class="auth-option disabled" id="faceIdAuth">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M0 0h512v512H0z' fill='none'/%3E%3Cpath fill='currentColor' d='M256 64c-88.36 0-160 71.64-160 160s71.64 160 160 160 160-71.64 160-160-71.64-160-160-160zm0 256A96 96 0 1 1 256 128a96 96 0 0 1 0 192zm0-288c-123.5 0-224 100.5-224 224s100.5 224 224 224 224-100.5 224-224-100.5-224-224-224zm0 416c-105.87 0-192-86.13-192-192S150.13 32 256 32s192 86.13 192 192-86.13 192-192 192z'/%3E%3C/svg%3E" alt="Face ID Icon" class="auth-icon">
+                <span class="auth-text">Use Face ID (Unavailable)</span>
+            </div>
+
+            <div id="passwordForm" class="hidden">
+                <input type="password" id="password" placeholder="Password" class="ios-input">
+                <button id="loginButton" class="ios-button">Log In</button>
+                <p id="loginFeedback" class="feedback-message hidden"></p>
+            </div>
+
+        </div>
+        <div class="wave"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const passwordAuth = document.getElementById('passwordAuth');
+            const faceIdAuth = document.getElementById('faceIdAuth');
+            const passwordForm = document.getElementById('passwordForm');
+            const loginButton = document.getElementById('loginButton');
+            const passwordInput = document.getElementById('password');
+            const loginFeedback = document.getElementById('loginFeedback');
+            const authBox = document.querySelector('.auth-box');
+
+            passwordAuth.addEventListener('click', () => {
+                passwordForm.classList.remove('hidden');
+            });
+
+            loginButton.addEventListener('click', () => {
+                const password = passwordInput.value;
+                if (password === 'shamase.co') {
+                    showFeedback('Login successful!', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                } else {
+                    showFeedback('Incorrect password.', 'error');
+                    authBox.classList.add('shake');
+                    setTimeout(() => {
+                        authBox.classList.remove('shake');
+                    }, 500);
+
+                }
+            });
+
+            function showFeedback(message, type) {
+                loginFeedback.textContent = message;
+                loginFeedback.className = 'feedback-message ' + type + ' active';
+                setTimeout(() => {
+                    loginFeedback.classList.remove('active');
+                }, 2500);
+            }
+
+            passwordAuth.addEventListener('touchstart', () => {
+                passwordAuth.classList.add('touch');
+            });
+
+            passwordAuth.addEventListener('touchend', () => {
+                passwordAuth.classList.remove('touch');
+            });
+
+            faceIdAuth.addEventListener('touchstart', () => {
+                faceIdAuth.classList.add('touch');
+            });
+
+            faceIdAuth.addEventListener('touchend', () => {
+                faceIdAuth.classList.remove('touch');
+            });
+
+        });
+    </script>
+</body>
+</html>

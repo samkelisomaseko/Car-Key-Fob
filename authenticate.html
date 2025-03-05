@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Authentication</title>
+    <style>
+        :root {
+            --ios-blue: #007AFF;
+            --ios-gray: #8E8E93;
+            --ios-background: #F2F2F7;
+            --ios-text: #000000;
+            --ios-secondary-text: #666666;
+            --ios-success: #28a745;
+            --ios-warning: #ffc107;
+            --ios-red: #FF3B30;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+            margin: 0;
+            background-color: var(--ios-background);
+            color: var(--ios-text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .auth-container {
+            background-color: #FFFFFF;
+            border-radius: 28px;
+            padding: clamp(30px, 8vw, 40px);
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: clamp(300px, 80vw, 400px);
+            max-width: 90%;
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .auth-container.shake {
+             animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% {
+                transform: translateX(-1px);
+            }
+
+            20%, 80% {
+                transform: translateX(2px);
+            }
+
+            30%, 50%, 70% {
+                transform: translateX(-4px);
+            }
+
+            40%, 60% {
+                transform: translateX(4px);
+            }
+        }
+
+
+        h2 {
+            font-size: clamp(24px, 6vw, 32px);
+            font-weight: 700;
+            margin-bottom: clamp(8px, 2vw, 16px);
+            letter-spacing: -0.02em;
+        }
+
+        p {
+            font-size: clamp(16px, 4vw, 18px);
+            color: var(--ios-secondary-text);
+            margin-bottom: clamp(20px, 5vw, 30px);
+            line-height: 1.4;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: clamp(12px, 3vw, 16px);
+            margin-bottom: clamp(15px, 4vw, 20px);
+            border: 1px solid var(--ios-gray);
+            border-radius: 12px;
+            font-size: clamp(16px, 4vw, 18px);
+            color: var(--ios-text);
+            background-color: var(--ios-background);
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="password"]:focus {
+            outline: none;
+            border-color: var(--ios-blue);
+        }
+
+        button {
+            background-color: var(--ios-blue);
+            color: white;
+            padding: clamp(12px, 3vw, 16px) clamp(24px, 6vw, 32px);
+            border: none;
+            border-radius: 18px;
+            font-size: clamp(17px, 4vw, 19px);
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform: scale(1);
+        }
+
+        button:hover {
+            background-color: #0062CC;
+        }
+
+        button:active {
+            transform: scale(0.96);
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <h2>Authentication Required</h2>
+        <p>Please enter your password to unlock the vehicle.</p>
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="authenticate()">Authenticate</button>
+    </div>
+
+    <script>
+        function authenticate() {
+            const password = document.getElementById('password').value;
+            const authContainer = document.querySelector('.auth-container');
+
+            if (password === 'shamase.co') {
+                // Set authentication flag in sessionStorage
+                sessionStorage.setItem('isAuthenticated', 'true');
+
+                const redirectURL = sessionStorage.getItem('redirectAfterAuth') || 'index.html';
+                window.location.href = redirectURL;
+            } else {
+                // Play shake animation on failure
+                authContainer.classList.add('shake');
+                setTimeout(() => {
+                    authContainer.classList.remove('shake');
+                }, 500);
+                 alert('Incorrect password. Authentication failed.');
+            }
+        }
+    </script>
+</body>
+</html>
