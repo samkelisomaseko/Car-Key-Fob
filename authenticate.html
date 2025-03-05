@@ -133,7 +133,7 @@
                 // Set authentication flag in sessionStorage
                 sessionStorage.setItem('isAuthenticated', 'true');
 
-                const redirectURL = sessionStorage.getItem('redirectAfterAuth') || 'index.html';
+                const redirectURL = sessionStorage.getItem('redirectAfterAuth') || 'controls.html';
                 window.location.href = redirectURL;
             } else {
                 // Play shake animation on failure
